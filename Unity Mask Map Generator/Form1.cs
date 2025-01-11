@@ -32,6 +32,7 @@ namespace Unity_Mask_Map_Generator
                 {
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
+                        image?.Dispose();
                         image = new Bitmap(openFileDialog.FileName);
                         pictureBox.Image = image;
                         return new BitmapImage(image, openFileDialog.FileName);
@@ -57,6 +58,7 @@ namespace Unity_Mask_Map_Generator
             else
             {
                 pictureBox1.Image = null;
+                metallic?.Dispose();
                 metallic = null;
                 state1 = false;
                 filePathText1.Text = "";
@@ -80,6 +82,7 @@ namespace Unity_Mask_Map_Generator
             else
             {
                 pictureBox2.Image = null;
+                ao?.Dispose();
                 ao = null;
                 state2 = false;
                 filePathText2.Text = "";
@@ -103,6 +106,7 @@ namespace Unity_Mask_Map_Generator
             else
             {
                 pictureBox3.Image = null;
+                smoothness?.Dispose();
                 smoothness = null;
                 state3 = false;
                 filePathText3.Text = "";
@@ -159,7 +163,7 @@ namespace Unity_Mask_Map_Generator
                 if (width && height)
                     return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return true;
             }
@@ -171,7 +175,9 @@ namespace Unity_Mask_Map_Generator
             try
             {
                 Bitmap bp = new Bitmap(filePathText1.Text);
+                pictureBox1.Image?.Dispose();
                 pictureBox1.Image = new Bitmap(bp);
+                metallic?.Dispose();
                 metallic = bp;
                 label4.Visible = false;
                 filePick1.Text = "Clear";
@@ -180,6 +186,7 @@ namespace Unity_Mask_Map_Generator
             catch (Exception)
             {
                 pictureBox1.Image = null;
+                metallic?.Dispose();
                 metallic = null;
                 state1 = false;
                 filePick1.Text = "Select";
@@ -192,7 +199,9 @@ namespace Unity_Mask_Map_Generator
             try
             {
                 Bitmap bp = new Bitmap(filePathText2.Text);
+                pictureBox2.Image?.Dispose();
                 pictureBox2.Image = new Bitmap(bp);
+                ao?.Dispose();
                 ao = new Bitmap(filePathText2.Text);
                 label4.Visible = false;
                 filePick2.Text = "Clear";
@@ -201,6 +210,7 @@ namespace Unity_Mask_Map_Generator
             catch (Exception)
             {
                 pictureBox2.Image = null;
+                ao?.Dispose();
                 ao = null;
                 state2 = false;
                 filePick2.Text = "Select";
@@ -213,7 +223,9 @@ namespace Unity_Mask_Map_Generator
             try
             {
                 Bitmap bp = new Bitmap(filePathText3.Text);
-                pictureBox3.Image = new Bitmap(filePathText3.Text);
+                pictureBox3.Image?.Dispose();
+                pictureBox3.Image = new Bitmap(bp);
+                smoothness?.Dispose();
                 smoothness = new Bitmap(filePathText3.Text);
                 label4.Visible = false;
                 filePick3.Text = "Clear";
@@ -222,6 +234,7 @@ namespace Unity_Mask_Map_Generator
             catch (Exception)
             {
                 pictureBox3.Image = null;
+                smoothness?.Dispose();
                 smoothness = null;
                 state3 = false;
                 filePick3.Text = "Select";
