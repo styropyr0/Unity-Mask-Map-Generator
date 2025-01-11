@@ -8,6 +8,7 @@ namespace Unity_Mask_Map_Generator
     {
         Bitmap metallic, ao, smoothness, maskMap;
         bool state1, state2, state3 = false;
+        bool invertState1, invertState2, invertState3 = false;
         int imageCount = 0;
         public Form1()
         {
@@ -260,6 +261,7 @@ namespace Unity_Mask_Map_Generator
             int width = metallic?.Width ?? ao?.Width ?? smoothness?.Width ?? 256;
             int height = metallic?.Height ?? ao?.Height ?? smoothness?.Height ?? 256;
             save.Visible = false;
+            maskMap?.Dispose();
             maskMap = null;
             resultPictureBox.Image = null;
             maskMap = new Bitmap(width, height);
@@ -276,9 +278,12 @@ namespace Unity_Mask_Map_Generator
                     for (int x = 0; x < width; x++)
                     {
                         int r = metallic != null ? metallic.GetPixel(x, y).R : 128;
+                        if (invertState1) r = 255 - r;
                         int g = ao != null ? ao.GetPixel(x, y).G : 128;
+                        if (invertState2) g = 255 - g;
                         int b = 128;
                         int a = smoothness != null ? smoothness.GetPixel(x, y).A : 255;
+                        if (invertState3) a = 255 - a;
                         maskMap.SetPixel(x, y, Color.FromArgb(a, r, g, b));
                     }
                     int progress = (int)((y * 1f) / height * 100);
@@ -314,6 +319,21 @@ namespace Unity_Mask_Map_Generator
         private void save_Click(object sender, EventArgs e)
         {
             saveGeneratedImage();
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            invertState1 = checkBox2.Checked;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            invertState2 = checkBox1.Checked;
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            invertState3 = checkBox3.Checked;
         }
     }
 }
