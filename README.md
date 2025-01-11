@@ -20,8 +20,8 @@ The installer is available here.
 5. The generated mask map will be saved in the specified output directory.
 
 ## Screenshots
-![Screenshot](Unity_Mask_Map_Generator/Screenshots/Screenshot0.png)
-![Screenshot](Unity_Mask_Map_Generator/Screenshots/Screenshot.png)
+![Screenshot](Screenshot0.png)
+![Screenshot](Screenshot.png)
 
 ## Contribution
 If you'd like to contribute to the project, please fork the repository and use a feature branch. Pull requests are warmly welcome.
