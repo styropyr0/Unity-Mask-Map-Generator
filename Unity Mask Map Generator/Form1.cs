@@ -138,7 +138,7 @@ namespace Unity_Mask_Map_Generator
                 helpText.Visible = false;
                 generateMaskMap();
             }
-            else if (!isBoundsMatching())
+            else if (metallic != null && ao != null && smoothness != null && !isBoundsMatching())
             {
                 errLabel.Visible = true;
                 errLabel.Text = "Image bounds are not matching!";
@@ -170,15 +170,15 @@ namespace Unity_Mask_Map_Generator
         {
             try
             {
-                pictureBox1.Image = new Bitmap(filePathText1.Text);
-                metallic = new Bitmap(filePathText1.Text);
+                Bitmap bp = new Bitmap(filePathText1.Text);
+                pictureBox1.Image = new Bitmap(bp);
+                metallic = bp;
                 label4.Visible = false;
                 filePick1.Text = "Clear";
                 state1 = true;
             }
             catch (Exception)
             {
-
                 pictureBox1.Image = null;
                 metallic = null;
                 state1 = false;
@@ -191,7 +191,8 @@ namespace Unity_Mask_Map_Generator
         {
             try
             {
-                pictureBox2.Image = new Bitmap(filePathText2.Text);
+                Bitmap bp = new Bitmap(filePathText2.Text);
+                pictureBox2.Image = new Bitmap(bp);
                 ao = new Bitmap(filePathText2.Text);
                 label4.Visible = false;
                 filePick2.Text = "Clear";
@@ -211,6 +212,7 @@ namespace Unity_Mask_Map_Generator
         {
             try
             {
+                Bitmap bp = new Bitmap(filePathText3.Text);
                 pictureBox3.Image = new Bitmap(filePathText3.Text);
                 smoothness = new Bitmap(filePathText3.Text);
                 label4.Visible = false;
@@ -252,6 +254,8 @@ namespace Unity_Mask_Map_Generator
 
             await Task.Run(() =>
             {
+                generate.Enabled = false;
+                generate.Text = "Generating...";
                 helpText2.Visible = true;
                 progressLabel.Visible = true;
                 for (int y = 0; y < height; y++)
@@ -272,6 +276,8 @@ namespace Unity_Mask_Map_Generator
                 progressLabel.Visible = false;
                 save.Visible = true;
                 helpText2.Visible = false;
+                generate.Text = "Generate";
+                generate.Enabled = true;
             });
             resultPictureBox.Image = maskMap;
         }
@@ -281,7 +287,7 @@ namespace Unity_Mask_Map_Generator
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Filter = "PNG Image|*.png";
-                saveFileDialog.Title = "Save an Image File";
+                saveFileDialog.Title = "Save the Mask Map";
                 saveFileDialog.FileName = "MaskMap" + imageCount++;
                 saveFileDialog.ShowDialog();
 
