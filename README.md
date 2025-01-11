@@ -10,7 +10,7 @@ The Unity Mask Map Generator is a C# desktop application designed to streamline 
 - Efficient generation of mask maps with a single click.
 
 ## Installation
-The installer is available here.
+The installation files are inside the Installer directory. Run the Setup.exe to install the software. You need .NET v8.0 or later to run the app.
 
 ## Usage
 1. Open the Unity Mask Map Generator.
