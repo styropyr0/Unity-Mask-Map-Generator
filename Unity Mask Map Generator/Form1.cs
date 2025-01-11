@@ -6,9 +6,9 @@ namespace Unity_Mask_Map_Generator
 {
     public partial class Form1 : Form
     {
-        Bitmap metallic, ao, smoothness, maskMap;
-        bool state1, state2, state3 = false;
-        bool invertState1, invertState2, invertState3 = false;
+        Bitmap metallic, ao, detail, smoothness, maskMap;
+        bool state1, state2, state3, state4 = false;
+        bool invertState1, invertState2, invertState3, invertState4 = false;
         int imageCount = 0;
         public Form1()
         {
@@ -17,6 +17,7 @@ namespace Unity_Mask_Map_Generator
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            imgSize.Visible = false;
             save.Visible = false;
             progressBar1.Visible = false;
             errLabel.Visible = false;
@@ -138,12 +139,12 @@ namespace Unity_Mask_Map_Generator
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (state1 == true || state2 == true || state3 == true)
+            if (state1 == true || state2 == true || state3 == true || state4 == true)
             {
                 helpText.Visible = false;
                 generateMaskMap();
             }
-            else if (metallic != null && ao != null && smoothness != null && !isBoundsMatching())
+            else if (metallic != null && ao != null && smoothness != null && detail != null && !isBoundsMatching())
             {
                 errLabel.Visible = true;
                 errLabel.Text = "Image bounds are not matching!";
@@ -159,8 +160,8 @@ namespace Unity_Mask_Map_Generator
         {
             try
             {
-                bool width = metallic.Width == ao.Width && ao.Width == smoothness.Width;
-                bool height = metallic.Height == ao.Height && ao.Height == smoothness.Height;
+                bool width = metallic.Width == ao.Width && ao.Width == smoothness.Width && smoothness.Width == detail.Width;
+                bool height = metallic.Height == ao.Height && ao.Height == smoothness.Height && smoothness.Height == detail.Height;
                 if (width && height)
                     return true;
             }
@@ -246,7 +247,7 @@ namespace Unity_Mask_Map_Generator
         private void showOrHideNoImageLabel()
         {
             errLabel.Visible = false;
-            if (state1 == false && state2 == false && state3 == false)
+            if (state1 == false && state2 == false && state3 == false && state4 == false)
                 label4.Visible = true;
         }
 
@@ -258,9 +259,10 @@ namespace Unity_Mask_Map_Generator
         private async void generateMaskMap()
         {
             CheckForIllegalCrossThreadCalls = false;
-            int width = metallic?.Width ?? ao?.Width ?? smoothness?.Width ?? 256;
-            int height = metallic?.Height ?? ao?.Height ?? smoothness?.Height ?? 256;
+            int width = metallic?.Width ?? ao?.Width ?? smoothness?.Width ?? detail?.Width ?? 256;
+            int height = metallic?.Height ?? ao?.Height ?? smoothness?.Height ?? detail?.Height ?? 256;
             save.Visible = false;
+            imgSize.Visible = false;
             maskMap?.Dispose();
             maskMap = null;
             resultPictureBox.Image = null;
@@ -281,7 +283,8 @@ namespace Unity_Mask_Map_Generator
                         if (invertState1) r = 255 - r;
                         int g = ao != null ? ao.GetPixel(x, y).G : 128;
                         if (invertState2) g = 255 - g;
-                        int b = 128;
+                        int b = detail != null ? detail.GetPixel(x, y).B : 128;
+                        if (invertState4) b = 255 - b;
                         int a = smoothness != null ? smoothness.GetPixel(x, y).A : 255;
                         if (invertState3) a = 255 - a;
                         maskMap.SetPixel(x, y, Color.FromArgb(a, r, g, b));
@@ -290,6 +293,8 @@ namespace Unity_Mask_Map_Generator
                     progressLabel.Text = progress + "%";
                     progressBar1.Value = progress;
                 }
+                imgSize.Text = "Image Size: " + width + "x" + height;
+                imgSize.Visible = true;
                 progressBar1.Visible = false;
                 progressLabel.Visible = false;
                 save.Visible = true;
@@ -334,6 +339,64 @@ namespace Unity_Mask_Map_Generator
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             invertState3 = checkBox3.Checked;
+        }
+
+        private void filePathText4_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Bitmap bp = new Bitmap(filePathText4.Text);
+                pictureBox4.Image?.Dispose();
+                pictureBox4.Image = new Bitmap(bp);
+                detail?.Dispose();
+                detail = bp;
+                label4.Visible = false;
+                filePick4.Text = "Clear";
+                state4 = true;
+            }
+            catch (Exception)
+            {
+                pictureBox4.Image = null;
+                detail?.Dispose();
+                detail = null;
+                state4 = false;
+                filePick4.Text = "Select";
+            }
+            showOrHideNoImageLabel();
+        }
+
+        private void filePick4_Click(object sender, EventArgs e)
+        {
+            if (filePick4.Text != "Clear")
+            {
+                BitmapImage bmp = LoadImage(ref detail, pictureBox4);
+                if (bmp != null)
+                {
+                    filePathText4.Text = bmp.getSource();
+                    filePick4.Text = "Clear";
+                    state4 = true;
+                }
+            }
+            else
+            {
+                pictureBox4.Image = null;
+                detail?.Dispose();
+                detail = null;
+                state4 = false;
+                filePathText4.Text = "";
+                filePick4.Text = "Select";
+            }
+            showOrHideNoImageLabel();
+        }
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            invertState4 = checkBox4.Checked;
+        }
+
+        private void resultPictureBox_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -30,11 +30,16 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             groupBox1 = new GroupBox();
+            checkBox4 = new CheckBox();
+            label5 = new Label();
+            filePick4 = new Button();
+            filePathText4 = new TextBox();
+            errLabel = new Label();
+            label4 = new Label();
+            pictureBox4 = new PictureBox();
             checkBox3 = new CheckBox();
             checkBox2 = new CheckBox();
             checkBox1 = new CheckBox();
-            errLabel = new Label();
-            label4 = new Label();
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
@@ -54,7 +59,9 @@
             progressBar1 = new ProgressBar();
             helpText2 = new Label();
             progressLabel = new Label();
+            imgSize = new Label();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -63,11 +70,16 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(checkBox4);
+            groupBox1.Controls.Add(label5);
+            groupBox1.Controls.Add(filePick4);
+            groupBox1.Controls.Add(filePathText4);
+            groupBox1.Controls.Add(errLabel);
+            groupBox1.Controls.Add(label4);
+            groupBox1.Controls.Add(pictureBox4);
             groupBox1.Controls.Add(checkBox3);
             groupBox1.Controls.Add(checkBox2);
             groupBox1.Controls.Add(checkBox1);
-            groupBox1.Controls.Add(errLabel);
-            groupBox1.Controls.Add(label4);
             groupBox1.Controls.Add(label3);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(label1);
@@ -83,17 +95,89 @@
             groupBox1.Font = new Font("Segoe UI Variable Display Semib", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.Location = new Point(12, 22);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(313, 334);
+            groupBox1.Size = new Size(313, 407);
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = "Pick Files";
+            // 
+            // checkBox4
+            // 
+            checkBox4.AutoSize = true;
+            checkBox4.BackColor = Color.Transparent;
+            checkBox4.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            checkBox4.Location = new Point(234, 172);
+            checkBox4.Name = "checkBox4";
+            checkBox4.Size = new Size(63, 21);
+            checkBox4.TabIndex = 17;
+            checkBox4.Text = "Invert";
+            checkBox4.UseVisualStyleBackColor = false;
+            checkBox4.CheckedChanged += checkBox4_CheckedChanged;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label5.Location = new Point(15, 176);
+            label5.Name = "label5";
+            label5.Size = new Size(72, 17);
+            label5.TabIndex = 16;
+            label5.Text = "Detail map:";
+            // 
+            // filePick4
+            // 
+            filePick4.Location = new Point(226, 196);
+            filePick4.Name = "filePick4";
+            filePick4.Size = new Size(71, 29);
+            filePick4.TabIndex = 15;
+            filePick4.Text = "Select";
+            filePick4.UseVisualStyleBackColor = true;
+            filePick4.Click += filePick4_Click;
+            // 
+            // filePathText4
+            // 
+            filePathText4.Location = new Point(15, 196);
+            filePathText4.Name = "filePathText4";
+            filePathText4.Size = new Size(203, 27);
+            filePathText4.TabIndex = 14;
+            filePathText4.TextChanged += filePathText4_TextChanged;
+            // 
+            // errLabel
+            // 
+            errLabel.AutoSize = true;
+            errLabel.BackColor = Color.Red;
+            errLabel.ForeColor = Color.White;
+            errLabel.Location = new Point(55, 340);
+            errLabel.Name = "errLabel";
+            errLabel.Size = new Size(187, 20);
+            errLabel.TabIndex = 10;
+            errLabel.Text = "Select at least one image.";
+            errLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.ForeColor = Color.Red;
+            label4.Location = new Point(59, 340);
+            label4.Name = "label4";
+            label4.Size = new Size(199, 20);
+            label4.TabIndex = 9;
+            label4.Text = "No image has been chosen.";
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.Location = new Point(165, 320);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(60, 60);
+            pictureBox4.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox4.TabIndex = 13;
+            pictureBox4.TabStop = false;
             // 
             // checkBox3
             // 
             checkBox3.AutoSize = true;
             checkBox3.BackColor = Color.Transparent;
             checkBox3.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            checkBox3.Location = new Point(234, 172);
+            checkBox3.Location = new Point(234, 240);
             checkBox3.Name = "checkBox3";
             checkBox3.Size = new Size(63, 21);
             checkBox3.TabIndex = 12;
@@ -127,33 +211,11 @@
             checkBox1.UseVisualStyleBackColor = false;
             checkBox1.CheckedChanged += checkBox1_CheckedChanged;
             // 
-            // errLabel
-            // 
-            errLabel.AutoSize = true;
-            errLabel.BackColor = Color.Red;
-            errLabel.ForeColor = Color.White;
-            errLabel.Location = new Point(51, 268);
-            errLabel.Name = "errLabel";
-            errLabel.Size = new Size(187, 20);
-            errLabel.TabIndex = 10;
-            errLabel.Text = "Select at least one image.";
-            errLabel.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.ForeColor = Color.Red;
-            label4.Location = new Point(45, 268);
-            label4.Name = "label4";
-            label4.Size = new Size(199, 20);
-            label4.TabIndex = 9;
-            label4.Text = "No image has been chosen.";
-            // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label3.Location = new Point(15, 176);
+            label3.Location = new Point(15, 244);
             label3.Name = "label3";
             label3.Size = new Size(111, 17);
             label3.TabIndex = 8;
@@ -182,9 +244,9 @@
             // 
             // pictureBox3
             // 
-            pictureBox3.Location = new Point(221, 250);
+            pictureBox3.Location = new Point(240, 320);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(65, 62);
+            pictureBox3.Size = new Size(60, 60);
             pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox3.TabIndex = 6;
             pictureBox3.TabStop = false;
@@ -193,9 +255,9 @@
             // 
             // pictureBox2
             // 
-            pictureBox2.Location = new Point(125, 250);
+            pictureBox2.Location = new Point(90, 320);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(65, 62);
+            pictureBox2.Size = new Size(60, 60);
             pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox2.TabIndex = 5;
             pictureBox2.TabStop = false;
@@ -204,9 +266,9 @@
             // pictureBox1
             // 
             pictureBox1.InitialImage = null;
-            pictureBox1.Location = new Point(29, 250);
+            pictureBox1.Location = new Point(15, 320);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(65, 62);
+            pictureBox1.Size = new Size(60, 60);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 2;
             pictureBox1.TabStop = false;
@@ -214,7 +276,7 @@
             // 
             // filePick3
             // 
-            filePick3.Location = new Point(226, 196);
+            filePick3.Location = new Point(226, 264);
             filePick3.Name = "filePick3";
             filePick3.Size = new Size(71, 29);
             filePick3.TabIndex = 4;
@@ -244,7 +306,7 @@
             // 
             // filePathText3
             // 
-            filePathText3.Location = new Point(15, 196);
+            filePathText3.Location = new Point(15, 264);
             filePathText3.Name = "filePathText3";
             filePathText3.Size = new Size(203, 27);
             filePathText3.TabIndex = 2;
@@ -269,9 +331,9 @@
             // generate
             // 
             generate.Font = new Font("Segoe UI Variable Display Semib", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            generate.Location = new Point(12, 380);
+            generate.Location = new Point(12, 435);
             generate.Name = "generate";
-            generate.Size = new Size(150, 42);
+            generate.Size = new Size(150, 55);
             generate.TabIndex = 1;
             generate.Text = "Generate";
             generate.UseVisualStyleBackColor = true;
@@ -281,7 +343,7 @@
             // 
             resultPictureBox.Location = new Point(348, 22);
             resultPictureBox.Name = "resultPictureBox";
-            resultPictureBox.Size = new Size(400, 400);
+            resultPictureBox.Size = new Size(460, 465);
             resultPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             resultPictureBox.TabIndex = 2;
             resultPictureBox.TabStop = false;
@@ -291,7 +353,7 @@
             helpText.AutoSize = true;
             helpText.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             helpText.ForeColor = Color.Gray;
-            helpText.Location = new Point(345, 198);
+            helpText.Location = new Point(379, 230);
             helpText.Name = "helpText";
             helpText.Size = new Size(403, 17);
             helpText.TabIndex = 3;
@@ -300,9 +362,9 @@
             // save
             // 
             save.Font = new Font("Segoe UI Variable Display Semib", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            save.Location = new Point(168, 380);
+            save.Location = new Point(168, 435);
             save.Name = "save";
-            save.Size = new Size(157, 42);
+            save.Size = new Size(157, 55);
             save.TabIndex = 4;
             save.Text = "Save";
             save.UseVisualStyleBackColor = true;
@@ -310,9 +372,9 @@
             // 
             // progressBar1
             // 
-            progressBar1.Location = new Point(14, 366);
+            progressBar1.Location = new Point(358, 256);
             progressBar1.Name = "progressBar1";
-            progressBar1.Size = new Size(261, 4);
+            progressBar1.Size = new Size(400, 4);
             progressBar1.TabIndex = 5;
             // 
             // helpText2
@@ -320,7 +382,7 @@
             helpText2.AutoSize = true;
             helpText2.Font = new Font("Segoe UI Variable Display", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             helpText2.ForeColor = Color.FromArgb(64, 64, 64);
-            helpText2.Location = new Point(459, 215);
+            helpText2.Location = new Point(490, 224);
             helpText2.Name = "helpText2";
             helpText2.Size = new Size(176, 20);
             helpText2.TabIndex = 6;
@@ -331,18 +393,30 @@
             progressLabel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             progressLabel.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             progressLabel.ImageAlign = ContentAlignment.MiddleRight;
-            progressLabel.Location = new Point(281, 359);
+            progressLabel.Location = new Point(757, 246);
             progressLabel.Name = "progressLabel";
-            progressLabel.Size = new Size(44, 17);
+            progressLabel.Size = new Size(41, 20);
             progressLabel.TabIndex = 7;
             progressLabel.Text = "0%";
             progressLabel.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // imgSize
+            // 
+            imgSize.AutoSize = true;
+            imgSize.BackColor = Color.Red;
+            imgSize.ForeColor = Color.White;
+            imgSize.Location = new Point(348, 467);
+            imgSize.Name = "imgSize";
+            imgSize.Size = new Size(0, 20);
+            imgSize.TabIndex = 11;
+            imgSize.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(774, 440);
+            ClientSize = new Size(827, 499);
+            Controls.Add(imgSize);
             Controls.Add(progressLabel);
             Controls.Add(helpText2);
             Controls.Add(progressBar1);
@@ -360,6 +434,7 @@
             Load += Form1_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -395,5 +470,11 @@
         private CheckBox checkBox1;
         private CheckBox checkBox3;
         private CheckBox checkBox2;
+        private PictureBox pictureBox4;
+        private CheckBox checkBox4;
+        private Label label5;
+        private Button filePick4;
+        private TextBox filePathText4;
+        private Label imgSize;
     }
 }
