@@ -30,6 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             groupBox1 = new GroupBox();
+            checkBox3 = new CheckBox();
+            checkBox2 = new CheckBox();
+            checkBox1 = new CheckBox();
             errLabel = new Label();
             label4 = new Label();
             label3 = new Label();
@@ -60,6 +63,9 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(checkBox3);
+            groupBox1.Controls.Add(checkBox2);
+            groupBox1.Controls.Add(checkBox1);
             groupBox1.Controls.Add(errLabel);
             groupBox1.Controls.Add(label4);
             groupBox1.Controls.Add(label3);
@@ -82,6 +88,45 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Pick Files";
             // 
+            // checkBox3
+            // 
+            checkBox3.AutoSize = true;
+            checkBox3.BackColor = Color.Transparent;
+            checkBox3.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            checkBox3.Location = new Point(234, 172);
+            checkBox3.Name = "checkBox3";
+            checkBox3.Size = new Size(63, 21);
+            checkBox3.TabIndex = 12;
+            checkBox3.Text = "Invert";
+            checkBox3.UseVisualStyleBackColor = false;
+            checkBox3.CheckedChanged += checkBox3_CheckedChanged;
+            // 
+            // checkBox2
+            // 
+            checkBox2.AutoSize = true;
+            checkBox2.BackColor = Color.Transparent;
+            checkBox2.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            checkBox2.Location = new Point(234, 36);
+            checkBox2.Name = "checkBox2";
+            checkBox2.Size = new Size(63, 21);
+            checkBox2.TabIndex = 11;
+            checkBox2.Text = "Invert";
+            checkBox2.UseVisualStyleBackColor = false;
+            checkBox2.CheckedChanged += checkBox2_CheckedChanged;
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.BackColor = Color.Transparent;
+            checkBox1.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            checkBox1.Location = new Point(234, 103);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(63, 21);
+            checkBox1.TabIndex = 8;
+            checkBox1.Text = "Invert";
+            checkBox1.UseVisualStyleBackColor = false;
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
+            // 
             // errLabel
             // 
             errLabel.AutoSize = true;
@@ -98,11 +143,11 @@
             // 
             label4.AutoSize = true;
             label4.ForeColor = Color.Red;
-            label4.Location = new Point(42, 268);
+            label4.Location = new Point(45, 268);
             label4.Name = "label4";
-            label4.Size = new Size(208, 20);
+            label4.Size = new Size(199, 20);
             label4.TabIndex = 9;
-            label4.Text = "No image have been chosen.";
+            label4.Text = "No image has been chosen.";
             // 
             // label3
             // 
@@ -347,5 +392,8 @@
         private Label errLabel;
         private Label helpText2;
         private Label progressLabel;
+        private CheckBox checkBox1;
+        private CheckBox checkBox3;
+        private CheckBox checkBox2;
     }
 }
