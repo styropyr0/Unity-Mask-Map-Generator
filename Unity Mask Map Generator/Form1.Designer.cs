@@ -237,9 +237,9 @@
             label1.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.Location = new Point(15, 40);
             label1.Name = "label1";
-            label1.Size = new Size(103, 17);
+            label1.Size = new Size(85, 17);
             label1.TabIndex = 2;
-            label1.Text = "Roughness map:";
+            label1.Text = "Metallic map:";
             label1.Click += label1_Click;
             // 
             // pictureBox3

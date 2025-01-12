@@ -279,13 +279,13 @@ namespace Unity_Mask_Map_Generator
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        int r = metallic != null ? metallic.GetPixel(x, y).R : 128;
+                        int r = metallic != null ? metallic.GetPixel(x, y).R : 0;
                         if (invertState1) r = 255 - r;
-                        int g = ao != null ? ao.GetPixel(x, y).G : 128;
+                        int g = ao != null ? ao.GetPixel(x, y).G : 0;
                         if (invertState2) g = 255 - g;
-                        int b = detail != null ? detail.GetPixel(x, y).B : 128;
+                        int b = detail != null ? detail.GetPixel(x, y).B : 0;
                         if (invertState4) b = 255 - b;
-                        int a = smoothness != null ? smoothness.GetPixel(x, y).A : 255;
+                        int a = smoothness != null ? smoothness.GetPixel(x, y).R : 255;
                         if (invertState3) a = 255 - a;
                         maskMap.SetPixel(x, y, Color.FromArgb(a, r, g, b));
                     }
