@@ -1,3 +1,5 @@
+using Coroutines;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 using Unity_Mask_Map_Generator.DataClasses;
@@ -259,8 +261,8 @@ namespace Unity_Mask_Map_Generator
         private async void generateMaskMap()
         {
             CheckForIllegalCrossThreadCalls = false;
-            int width = metallic?.Width ?? ao?.Width ?? smoothness?.Width ?? detail?.Width ?? 256;
-            int height = metallic?.Height ?? ao?.Height ?? smoothness?.Height ?? detail?.Height ?? 256;
+            int width = Math.Max(Math.Max(metallic?.Width ?? 0, ao?.Width ?? 0), Math.Max(smoothness?.Width ?? 0, detail?.Width ?? 0));
+            int height = Math.Max(Math.Max(metallic?.Height ?? 0, ao?.Height ?? 0), Math.Max(smoothness?.Height ?? 0, detail?.Height ?? 0));
             save.Visible = false;
             imgSize.Visible = false;
             maskMap?.Dispose();
@@ -268,8 +270,10 @@ namespace Unity_Mask_Map_Generator
             resultPictureBox.Image = null;
             maskMap = new Bitmap(width, height);
             progressBar1.Visible = true;
-
-            await Task.Run(() =>
+            EnableOrDisableCheckBoxes(false);
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            await GlobalScope.Launch(() =>
             {
                 generate.Enabled = false;
                 generate.Text = "Generating...";
@@ -293,16 +297,34 @@ namespace Unity_Mask_Map_Generator
                     progressLabel.Text = progress + "%";
                     progressBar1.Value = progress;
                 }
-                imgSize.Text = "Image Size: " + width + "x" + height;
+                stopwatch.Stop();
+                imgSize.Text = $"Image Size: {width} x {height} ({stopwatch.ElapsedMilliseconds / 1000f}s)";
                 imgSize.Visible = true;
                 progressBar1.Visible = false;
                 progressLabel.Visible = false;
                 save.Visible = true;
                 helpText2.Visible = false;
                 generate.Text = "Generate";
+                EnableOrDisableCheckBoxes(true);
                 generate.Enabled = true;
             });
             resultPictureBox.Image = maskMap;
+        }
+
+        private void EnableOrDisableCheckBoxes(bool state)
+        {
+            checkBox1.Enabled = state;
+            checkBox2.Enabled = state;
+            checkBox3.Enabled = state;
+            checkBox4.Enabled = state;
+            filePick1.Enabled = state;
+            filePick2.Enabled = state;
+            filePick3.Enabled = state;
+            filePick4.Enabled = state;
+            filePathText1.Enabled = state;
+            filePathText2.Enabled = state;
+            filePathText3.Enabled = state;
+            filePathText4.Enabled = state;
         }
 
         private void saveGeneratedImage()
