@@ -8,9 +8,9 @@ namespace Unity_Mask_Map_Generator
 {
     public partial class Form1 : Form
     {
-        Bitmap metallic, ao, detail, smoothness, maskMap;
-        bool state1, state2, state3, state4 = false;
-        bool invertState1, invertState2, invertState3, invertState4 = false;
+        private static Bitmap metallic, ao, detail, smoothness, maskMap;
+        private static bool state1, state2, state3, state4 = false;
+        private static bool invertState1, invertState2, invertState3, invertState4 = false;
         int imageCount = 0;
         public Form1()
         {
@@ -144,7 +144,7 @@ namespace Unity_Mask_Map_Generator
             if (state1 == true || state2 == true || state3 == true || state4 == true)
             {
                 helpText.Visible = false;
-                generateMaskMap();
+                GenerateMaskMap();
             }
             else if (metallic != null && ao != null && smoothness != null && detail != null && !isBoundsMatching())
             {
@@ -258,57 +258,125 @@ namespace Unity_Mask_Map_Generator
 
         }
 
-        private async void generateMaskMap()
+        private async void GenerateMaskMap()
         {
             CheckForIllegalCrossThreadCalls = false;
+
             int width = Math.Max(Math.Max(metallic?.Width ?? 0, ao?.Width ?? 0), Math.Max(smoothness?.Width ?? 0, detail?.Width ?? 0));
             int height = Math.Max(Math.Max(metallic?.Height ?? 0, ao?.Height ?? 0), Math.Max(smoothness?.Height ?? 0, detail?.Height ?? 0));
+
             save.Visible = false;
             imgSize.Visible = false;
             maskMap?.Dispose();
             maskMap = null;
             resultPictureBox.Image = null;
+
             maskMap = new Bitmap(width, height);
             progressBar1.Visible = true;
             EnableOrDisableCheckBoxes(false);
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            await GlobalScope.Launch(() =>
-            {
-                generate.Enabled = false;
-                generate.Text = "Generating...";
-                helpText2.Visible = true;
-                progressLabel.Visible = true;
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        int r = metallic != null ? metallic.GetPixel(x, y).R : 0;
-                        if (invertState1) r = 255 - r;
-                        int g = ao != null ? ao.GetPixel(x, y).G : 0;
-                        if (invertState2) g = 255 - g;
-                        int b = detail != null ? detail.GetPixel(x, y).B : 0;
-                        if (invertState4) b = 255 - b;
-                        int a = smoothness != null ? smoothness.GetPixel(x, y).R : 255;
-                        if (invertState3) a = 255 - a;
-                        maskMap.SetPixel(x, y, Color.FromArgb(a, r, g, b));
-                    }
-                    int progress = (int)((y * 1f) / height * 100);
-                    progressLabel.Text = progress + "%";
-                    progressBar1.Value = progress;
-                }
-                stopwatch.Stop();
-                imgSize.Text = $"Image Size: {width} x {height} ({stopwatch.ElapsedMilliseconds / 1000f}s)";
-                imgSize.Visible = true;
-                progressBar1.Visible = false;
-                progressLabel.Visible = false;
-                save.Visible = true;
-                helpText2.Visible = false;
-                generate.Text = "Generate";
-                EnableOrDisableCheckBoxes(true);
-                generate.Enabled = true;
-            });
+
+            generate.Enabled = false;
+            generate.Text = "Generating...";
+            helpText2.Visible = true;
+            progressLabel.Visible = true;
+
+            byte[] maskMapData = new byte[width * height * 4];
+            byte[]? metallicData = metallic != null ? ConvertBitmapToByteArray(metallic) : null;
+            byte[]? aoData = ao != null ? ConvertBitmapToByteArray(ao) : null;
+            byte[]? detailData = detail != null ? ConvertBitmapToByteArray(detail) : null;
+            byte[]? smoothnessData = smoothness != null ? ConvertBitmapToByteArray(smoothness) : null;
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            // Using the CoroutineBuilder to launch multiple coroutines in parallel
+            await CoroutineBuilder.LaunchAll(new List<Func<Task>>{
+                () => { ProcessImage(maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, 0, height / 4); return Task.CompletedTask; },
+                () => { ProcessImage(maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, height / 4, height / 4); return Task.CompletedTask; },
+                () => { ProcessImage(maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, height / 2, height / 4); return Task.CompletedTask; },
+                () => { ProcessImage(maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, 3 * height / 4, height / 4); return Task.CompletedTask; }
+            }, Dispatcher.Main);
+
+            maskMap = ConvertToBitmap(maskMapData, width, height);
             resultPictureBox.Image = maskMap;
+            stopwatch.Stop();
+            imgSize.Text = $"Image Size: {width} x {height} ({stopwatch.ElapsedMilliseconds / 1000f:F2}s)";
+            imgSize.Visible = true;
+            progressBar1.Visible = false;
+            progressLabel.Visible = false;
+            save.Visible = true;
+            helpText2.Visible = false;
+            generate.Text = "Generate";
+            EnableOrDisableCheckBoxes(true);
+            generate.Enabled = true;
+        }
+
+        private static byte[] ConvertBitmapToByteArray(Bitmap bitmap)
+        {
+            int width = bitmap.Width;
+            int height = bitmap.Height;
+            byte[] byteArray = new byte[width * height * 4];
+
+            var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, byteArray, 0, byteArray.Length);
+            bitmap.UnlockBits(bitmapData);
+
+            return byteArray;
+        }
+
+        private static void ProcessImage(byte[] maskMapData, byte[] metallicData, byte[] aoData, byte[] detailData, byte[] smoothnessData, int width, int height, int startY, int chunkHeight)
+        {
+            for (int y = startY; y < startY + chunkHeight; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int index = (y * width + x) * 4;
+
+                    int a = 255, r = 0, g = 0, b = 0;
+
+                    if (metallicData != null)
+                    {
+                        int metallicIndex = index;
+                        r = metallicData[metallicIndex + 2];
+                        if (invertState1) r = 255 - r;
+                    }
+
+                    if (aoData != null)
+                    {
+                        int aoIndex = index;
+                        g = aoData[aoIndex + 1];
+                        if (invertState2) g = 255 - g;
+                    }
+
+                    if (detailData != null)
+                    {
+                        int detailIndex = index;
+                        b = detailData[detailIndex];
+                        if (invertState4) b = 255 - b;
+                    }
+
+                    if (smoothnessData != null)
+                    {
+                        int smoothnessIndex = index;
+                        a = smoothnessData[smoothnessIndex + 3];
+                        if (invertState3) a = 255 - a;
+                    }
+
+                    maskMapData[index + 0] = (byte)b;
+                    maskMapData[index + 1] = (byte)g;
+                    maskMapData[index + 2] = (byte)r;
+                    maskMapData[index + 3] = (byte)a;
+                }
+            }
+        }
+
+        private static Bitmap ConvertToBitmap(byte[] pixelData, int width, int height)
+        {
+            Bitmap bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.WriteOnly, bitmap.PixelFormat);
+            System.Runtime.InteropServices.Marshal.Copy(pixelData, 0, bitmapData.Scan0, pixelData.Length);
+            bitmap.UnlockBits(bitmapData);
+
+            return bitmap;
         }
 
         private void EnableOrDisableCheckBoxes(bool state)
