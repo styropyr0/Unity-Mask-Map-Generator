@@ -119,9 +119,9 @@
             label5.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label5.Location = new Point(15, 176);
             label5.Name = "label5";
-            label5.Size = new Size(72, 17);
+            label5.Size = new Size(90, 17);
             label5.TabIndex = 16;
-            label5.Text = "Detail map:";
+            label5.Text = "Detail map (B):";
             // 
             // filePick4
             // 
@@ -143,25 +143,28 @@
             // 
             // errLabel
             // 
+            errLabel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             errLabel.AutoSize = true;
             errLabel.BackColor = Color.Red;
             errLabel.ForeColor = Color.White;
-            errLabel.Location = new Point(55, 340);
+            errLabel.Location = new Point(38, 340);
             errLabel.Name = "errLabel";
-            errLabel.Size = new Size(187, 20);
+            errLabel.Size = new Size(233, 20);
             errLabel.TabIndex = 10;
-            errLabel.Text = "Select at least one image.";
+            errLabel.Text = "Please select at least one image.";
             errLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label4
             // 
+            label4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label4.AutoSize = true;
             label4.ForeColor = Color.Red;
-            label4.Location = new Point(59, 340);
+            label4.Location = new Point(46, 340);
             label4.Name = "label4";
-            label4.Size = new Size(199, 20);
+            label4.Size = new Size(207, 20);
             label4.TabIndex = 9;
-            label4.Text = "No image has been chosen.";
+            label4.Text = "No image has been selected.";
+            label4.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pictureBox4
             // 
@@ -217,9 +220,9 @@
             label3.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label3.Location = new Point(15, 244);
             label3.Name = "label3";
-            label3.Size = new Size(111, 17);
+            label3.Size = new Size(130, 17);
             label3.TabIndex = 8;
-            label3.Text = "Smoothness map:";
+            label3.Text = "Smoothness map (A):";
             // 
             // label2
             // 
@@ -227,9 +230,9 @@
             label2.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.Location = new Point(15, 108);
             label2.Name = "label2";
-            label2.Size = new Size(147, 17);
+            label2.Size = new Size(167, 17);
             label2.TabIndex = 7;
-            label2.Text = "Ambient occlusion map:";
+            label2.Text = "Ambient occlusion map (G):";
             // 
             // label1
             // 
@@ -237,9 +240,9 @@
             label1.Font = new Font("Segoe UI Variable Display", 7.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.Location = new Point(15, 40);
             label1.Name = "label1";
-            label1.Size = new Size(85, 17);
+            label1.Size = new Size(104, 17);
             label1.TabIndex = 2;
-            label1.Text = "Metallic map:";
+            label1.Text = "Metallic map (R):";
             label1.Click += label1_Click;
             // 
             // pictureBox3

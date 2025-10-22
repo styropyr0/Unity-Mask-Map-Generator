@@ -8,7 +8,7 @@ namespace Unity_Mask_Map_Generator
 {
     public partial class Form1 : Form
     {
-        private static Bitmap metallic, ao, detail, smoothness, maskMap;
+        private static Bitmap? metallic, ao, detail, smoothness, maskMap;
         private static bool state1, state2, state3, state4 = false;
         private static bool invertState1, invertState2, invertState3, invertState4 = false;
         int imageCount = 0;
@@ -27,11 +27,11 @@ namespace Unity_Mask_Map_Generator
             progressLabel.Visible = false;
         }
 
-        private BitmapImage LoadImage(ref Bitmap image, PictureBox pictureBox)
+        private BitmapImage? LoadImage(ref Bitmap image, PictureBox pictureBox)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "Image files (*.png;*.jpg)|*.png;*.jpg";
+                openFileDialog.Filter = "Image files (*.png;*.jpg;*.tiff;*.tif)|*.png;*.jpg;*.tiff;*.tif";
                 try
                 {
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -51,7 +51,7 @@ namespace Unity_Mask_Map_Generator
         {
             if (filePick1.Text != "Clear")
             {
-                BitmapImage bmp = LoadImage(ref metallic, pictureBox1);
+                BitmapImage? bmp = LoadImage(ref metallic, pictureBox1);
                 if (bmp != null)
                 {
                     filePathText1.Text = bmp.getSource();
@@ -75,7 +75,7 @@ namespace Unity_Mask_Map_Generator
         {
             if (filePick2.Text != "Clear")
             {
-                BitmapImage bmp = LoadImage(ref ao, pictureBox2);
+                BitmapImage? bmp = LoadImage(ref ao, pictureBox2);
                 if (bmp != null)
                 {
                     filePathText2.Text = bmp.getSource();
@@ -99,7 +99,7 @@ namespace Unity_Mask_Map_Generator
         {
             if (filePick3.Text != "Clear")
             {
-                BitmapImage bmp = LoadImage(ref smoothness, pictureBox3);
+                BitmapImage? bmp = LoadImage(ref smoothness, pictureBox3);
                 if (bmp != null)
                 {
                     filePathText3.Text = bmp.getSource();
@@ -141,19 +141,20 @@ namespace Unity_Mask_Map_Generator
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (state1 == true || state2 == true || state3 == true || state4 == true)
+            if (!isBoundsMatching())
+            {
+                errLabel.Visible = true;
+                errLabel.Text = "Images must be the same size.";
+            }
+            else if (state1 == true || state2 == true || state3 == true || state4 == true)
             {
                 helpText.Visible = false;
                 GenerateMaskMap();
             }
-            else if (metallic != null && ao != null && smoothness != null && detail != null && !isBoundsMatching())
-            {
-                errLabel.Visible = true;
-                errLabel.Text = "Image bounds are not matching!";
-            }
             else
             {
                 label4.Visible = false;
+                errLabel.Text = "Please select at least one image.";
                 errLabel.Visible = true;
             }
         }
@@ -162,9 +163,12 @@ namespace Unity_Mask_Map_Generator
         {
             try
             {
-                bool width = metallic.Width == ao.Width && ao.Width == smoothness.Width && smoothness.Width == detail.Width;
-                bool height = metallic.Height == ao.Height && ao.Height == smoothness.Height && smoothness.Height == detail.Height;
-                if (width && height)
+                int maxWidth = Math.Max(Math.Max(metallic?.Width ?? 0, ao?.Width ?? 0), Math.Max(smoothness?.Width ?? 0, detail?.Width ?? 0));
+                int maxHeight = Math.Max(Math.Max(metallic?.Height ?? 0, ao?.Height ?? 0), Math.Max(smoothness?.Height ?? 0, detail?.Height ?? 0));
+
+                bool widthMatch = maxWidth == (metallic?.Width ?? maxWidth) && maxWidth == (ao?.Width ?? maxWidth) && maxWidth == (smoothness?.Width ?? maxWidth) && maxWidth == (detail?.Width ?? maxWidth);
+                bool heightMatch = maxHeight == (metallic?.Height ?? maxHeight) && maxHeight == (ao?.Height ?? maxHeight) && maxHeight == (smoothness?.Height ?? maxHeight) && maxHeight == (detail?.Height ?? maxHeight);
+                if (widthMatch && heightMatch)
                     return true;
             }
             catch (Exception)
@@ -270,6 +274,7 @@ namespace Unity_Mask_Map_Generator
             maskMap?.Dispose();
             maskMap = null;
             resultPictureBox.Image = null;
+            resultPictureBox.Visible = false;
 
             maskMap = new Bitmap(width, height);
             progressBar1.Visible = true;
@@ -288,16 +293,23 @@ namespace Unity_Mask_Map_Generator
 
             Stopwatch stopwatch = Stopwatch.StartNew();
 
+            progress = 0;
+
             // Using the CoroutineBuilder to launch multiple coroutines in parallel
             await CoroutineBuilder.LaunchAll(new List<Func<Task>>{
-                () => { ProcessImage(maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, 0, height / 4); return Task.CompletedTask; },
-                () => { ProcessImage(maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, height / 4, height / 4); return Task.CompletedTask; },
-                () => { ProcessImage(maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, height / 2, height / 4); return Task.CompletedTask; },
-                () => { ProcessImage(maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, 3 * height / 4, height / 4); return Task.CompletedTask; }
+                () => { ProcessImage(progressBar1, progressLabel, maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, 0, height / 4); return Task.CompletedTask; },
+                () => { ProcessImage(progressBar1, progressLabel, maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, height / 4, height / 4); return Task.CompletedTask; },
+                () => { ProcessImage(progressBar1, progressLabel, maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, height / 2, height / 4); return Task.CompletedTask; },
+                () => { ProcessImage(progressBar1, progressLabel, maskMapData, metallicData, aoData, detailData, smoothnessData, width, height, 3 * height / 4, height / 4); return Task.CompletedTask; }
             }, Dispatcher.Main);
 
+            await Suspend.ForMilliseconds(1000);
+
+            progressBar1.Value = 100;
+            progressLabel.Text = "100%";
             maskMap = ConvertToBitmap(maskMapData, width, height);
             resultPictureBox.Image = maskMap;
+            resultPictureBox.Visible = true;
             stopwatch.Stop();
             imgSize.Text = $"Image Size: {width} x {height} ({stopwatch.ElapsedMilliseconds / 1000f:F2}s)";
             imgSize.Visible = true;
@@ -323,7 +335,10 @@ namespace Unity_Mask_Map_Generator
             return byteArray;
         }
 
-        private static void ProcessImage(byte[] maskMapData, byte[] metallicData, byte[] aoData, byte[] detailData, byte[] smoothnessData, int width, int height, int startY, int chunkHeight)
+        static int progress = 0;
+        static bool progressMutex = false;
+
+        private static void ProcessImage(ProgressBar progressBar, Label progressView, byte[] maskMapData, byte[] metallicData, byte[] aoData, byte[] detailData, byte[] smoothnessData, int width, int height, int startY, int chunkHeight)
         {
             for (int y = startY; y < startY + chunkHeight; y++)
             {
@@ -365,6 +380,17 @@ namespace Unity_Mask_Map_Generator
                     maskMapData[index + 1] = (byte)g;
                     maskMapData[index + 2] = (byte)r;
                     maskMapData[index + 3] = (byte)a;
+
+                    int p = (int)((y * width + x) * 100 / (width * height));
+
+                    if (!progressMutex && p > progress)
+                    {
+                        progressMutex = true;
+                        progress = p;
+                        progressBar.Value = p;
+                        progressView.Text = progress + "%";
+                        progressMutex = false;
+                    }
                 }
             }
         }
@@ -406,7 +432,10 @@ namespace Unity_Mask_Map_Generator
 
                 if (saveFileDialog.FileName != "")
                 {
-                    maskMap.Save(saveFileDialog.FileName, ImageFormat.Png);
+                    if (maskMap != null)
+                        maskMap?.Save(saveFileDialog.FileName, ImageFormat.Png);
+                    else
+                        MessageBox.Show("Failed to save the image. Seems like there is an issue with one or more of the selected images", "Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -459,7 +488,7 @@ namespace Unity_Mask_Map_Generator
         {
             if (filePick4.Text != "Clear")
             {
-                BitmapImage bmp = LoadImage(ref detail, pictureBox4);
+                BitmapImage? bmp = LoadImage(ref detail, pictureBox4);
                 if (bmp != null)
                 {
                     filePathText4.Text = bmp.getSource();
