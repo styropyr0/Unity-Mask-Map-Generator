@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>6841854.ico</ApplicationIcon>
+    <ApplicationIcon>6841856.ico</ApplicationIcon>
     <SignAssembly>True</SignAssembly>
     <Authors>Saurav Sajeev</Authors>
     <AssemblyTitle>Unity Mask Map Generator</AssemblyTitle>
@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="6841854.ico" />
+    <Content Include="6841856.ico" />
   </ItemGroup>
 
   <ItemGroup>

@@ -31,7 +31,14 @@ namespace Unity_Mask_Map_Generator
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "Image files (*.png;*.jpg;*.tiff;*.tif)|*.png;*.jpg;*.tiff;*.tif";
+                openFileDialog.Filter =
+                            "PNG Image|*.png|" +
+                            "JPEG Image|*.jpg;*.jpeg|" +
+                            "TIFF Image|*.tif;*.tiff|" +
+                            "BMP Image|*.bmp|" +
+                            "EXR Image|*.exr|" +
+                            "All Image Files|*.png;*.jpg;*.jpeg;*.tif;*.tiff;*.bmp;*.exr";
+
                 try
                 {
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -425,7 +432,15 @@ namespace Unity_Mask_Map_Generator
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = "PNG Image|*.png";
+                saveFileDialog.Filter =
+                        "PNG Image|*.png|" +
+                        "JPEG Image|*.jpg;*.jpeg|" +
+                        "TIFF Image|*.tif;*.tiff|" +
+                        "BMP Image|*.bmp|" +
+                        "GIF Image|*.gif|" +
+                        "EXR Image|*.exr|" +
+                        "All Image Files|*.png;*.jpg;*.jpeg;*.tif;*.tiff;*.bmp;*.gif;*.exr";
+
                 saveFileDialog.Title = "Save the Mask Map";
                 saveFileDialog.FileName = "MaskMap" + imageCount++;
                 saveFileDialog.ShowDialog();
