@@ -3,6 +3,8 @@
 ## Overview
 The Unity Mask Map Generator is a C# desktop application designed to streamline the process of creating mask maps for Unity HDRP projects. This tool allows developers to easily combine different texture maps into a single mask map, optimizing their materials and improving rendering performance.
 
+[Get it here](https://maskgen.up.railway.app)
+
 ## Features
 - Import and combine texture maps: Metallic, Ambient Occlusion, Detail, and Smoothness.
 - User-friendly interface with clear options and an intuitive workflow.
